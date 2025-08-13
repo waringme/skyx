@@ -189,6 +189,52 @@
       }
     ]
   },
+
+  {
+    "id": "offer",
+    "fields": [
+      {
+        "component": "aem-content-fragment",
+        "name": "offerpath",
+        "value": "",
+        "label": "Offer Content Fragment path",
+        "valueType": "string",
+        "variationName": "contentFragmentVariation",
+        "validation": {
+          "rootPath": "/content/skyx"
+        }
+      },
+      {
+        "component": "text-input",
+        "name": "offerTitle",
+        "value": "",
+        "label": "Offer Title",
+        "valueType": "string"
+      },
+      {
+        "component": "text-input",
+        "name": "offerDescription",
+        "value": "",
+        "label": "Offer Description",
+        "valueType": "string"
+      },
+      {
+        "component": "text-input",
+        "name": "offerImage",
+        "value": "",
+        "label": "Offer Image URL",
+        "valueType": "string"
+      },
+      {
+        "component": "text-input",
+        "name": "variation",
+        "value": "",
+        "label": "Variation",
+        "valueType": "string"
+      }
+    ]
+  },
+
   {
     "id": "hero",
     "fields": [
