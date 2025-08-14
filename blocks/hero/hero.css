@@ -5,15 +5,114 @@
 
 .hero {
   position: relative;
-  padding: 40px 24px;
+  padding: 20px 24px 10px 24px;
   min-height: 300px;
+  margin-top: 10px;
 }
 
 .hero h1 {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  color: var(--background-color);
+  color: white;
+}
+
+.hero h2,
+.hero h3,
+.hero h4,
+.hero h5,
+.hero h6,
+.hero p,
+.hero span,
+.hero div,
+.hero a {
+  color: white;
+}
+
+/* Ensure all text in hero blocks is white */
+.hero * {
+  color: white;
+}
+
+.hero p {
+  max-width: 40%;
+  text-align: center;
+  margin-left: 0;
+}
+
+.hero h1 {
+  max-width: 40%;
+  text-align: center;
+  margin-left: 0;
+}
+
+/* H6 specific styling - 50% width */
+.hero h6 {
+  max-width: 40%;
+  margin-left: 0;
+  margin-right: auto;
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Button-style links in hero */
+.hero a.button,
+.hero a[class*="btn"],
+.hero a[class*="cta"] {
+  background: linear-gradient(to bottom, #0070d2 0%, #0056b3 100%);
+  color: white;
+  padding: 16px 32px;
+  font-weight: 700;
+  font-size: 16px;
+  border-radius: 8px;
+  text-transform: none;
+  letter-spacing: 0;
+  text-decoration: none;
+  display: inline-block;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Glossy top highlight effect */
+.hero a.button::before,
+.hero a[class*="btn"]::before,
+.hero a[class*="cta"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1));
+  border-radius: 8px 8px 0 0;
+}
+
+.hero a.button:hover,
+.hero a[class*="btn"]:hover,
+.hero a[class*="cta"]:hover {
+  background: linear-gradient(to bottom, #0056b3 0%, #004494 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.hero a.button:active,
+.hero a[class*="btn"]:active,
+.hero a[class*="cta"]:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Focus state for accessibility */
+.hero a.button:focus,
+.hero a[class*="btn"]:focus,
+.hero a[class*="cta"]:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 2px;
 }
 
 .hero picture {
@@ -33,5 +132,13 @@
 @media (width >= 900px) {
   .hero {
     padding: 40px 32px;
+  }
+  
+  .hero h1 {
+    max-width: 40%;
+  }
+
+  .hero h6 {
+    max-width: 40%;
   }
 }

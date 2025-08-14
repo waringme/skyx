@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="nav" content="/nav">
+    <meta name="test-nav" content="/nav">
+    <meta property="nav" content="/nav">
+    <title>Test Navigation - Sky.com</title>
+    <link rel="stylesheet" href="blocks/header/header.css">
+</head>
+<body>
+    <header>
+        <!-- This will be decorated by the header component -->
+    </header>
+    
+    <main style="padding-top: 80px; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 40px 20px; color: white; text-align: center;">
+            <h1 style="font-size: 3rem; margin-bottom: 20px;">Navigation Test</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 40px;">Testing AEM navigation loading with nav metadata</p>
+            
+            <div style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 10px; backdrop-filter: blur(10px);">
+                <h2 style="margin-bottom: 20px;">Debug Information</h2>
+                <p>Check the browser console for navigation loading logs:</p>
+                <ul style="text-align: left; max-width: 600px; margin: 20px auto;">
+                    <li>🔍 Navigation decoration start</li>
+                    <li>📋 Nav metadata found</li>
+                    <li>🛣️ Loading from AEM path</li>
+                    <li>📄 Fragment loading</li>
+                    <li>✅ AEM navigation parsed</li>
+                </ul>
+                
+                <p><strong>Expected:</strong> Navigation should load from <code>/nav</code> instead of default</p>
+                <p><strong>If using default:</strong> Check console for error messages</p>
+            </div>
+            
+            <div style="margin-top: 40px;">
+                <h3>To test AEM integration:</h3>
+                <ol style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    <li>Open browser console (F12)</li>
+                    <li>Refresh the page</li>
+                    <li>Look for navigation loading logs</li>
+                    <li>Check if AEM content is loaded or default is used</li>
+                </ol>
+            </div>
+            
+            <div style="margin-top: 40px; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px;">
+                <h3>Metadata Test</h3>
+                <p>This page includes multiple metadata formats:</p>
+                <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    <li><code>&lt;meta name="nav" content="/nav"&gt;</code></li>
+                    <li><code>&lt;meta name="test-nav" content="/nav"&gt;</code></li>
+                    <li><code>&lt;meta property="nav" content="/nav"&gt;</code></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    
+    <script src="scripts/aem.js" type="module"></script>
+    <script src="scripts/scripts.js" type="module"></script>
+    <script type="module">
+        import decorate from './blocks/header/header.js';
+        
+        // Test metadata detection immediately
+        console.log('🚀 Page loaded, testing metadata detection...');
+        
+        // Test 1: Direct DOM query
+        const navMetaDirect = document.querySelector('meta[name="nav"]');
+        console.log('📋 Direct DOM query for nav meta:', navMetaDirect);
+        if (navMetaDirect) {
+            console.log('📋 Nav meta content:', navMetaDirect.getAttribute('content'));
+        }
+        
+        // Test 2: All meta tags
+        const allMetaTags = document.querySelectorAll('meta');
+        console.log('📋 Total meta tags found:', allMetaTags.length);
+        allMetaTags.forEach((meta, index) => {
+            const name = meta.getAttribute('name');
+            const property = meta.getAttribute('property');
+            const content = meta.getAttribute('content');
+            console.log(`📋 Meta ${index}: name="${name}" property="${property}" content="${content}"`);
+        });
+        
+        // Test 3: Check if getMetadata function is available
+        console.log('🔍 getMetadata function available:', typeof window.getMetadata !== 'undefined');
+        
+        // Wait for DOM to be ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🚀 DOM Content Loaded, starting navigation test...');
+            
+            // Test metadata again after DOM is ready
+            const navMetaAfterDOM = document.querySelector('meta[name="nav"]');
+            console.log('📋 Nav meta after DOM ready:', navMetaAfterDOM);
+            
+            const headerBlock = document.querySelector('header');
+            if (headerBlock) {
+                try {
+                    await decorate(headerBlock);
+                    console.log('✅ Header decoration completed successfully');
+                } catch (error) {
+                    console.error('❌ Error decorating header:', error);
+                }
+            } else {
+                console.error('❌ Header element not found');
+            }
+        });
+        
+        // Also test on window load
+        window.addEventListener('load', () => {
+            console.log('🚀 Window loaded, final metadata check...');
+            const navMetaOnLoad = document.querySelector('meta[name="nav"]');
+            console.log('📋 Nav meta on window load:', navMetaOnLoad);
+        });
+    </script>
+</body>
+</html>

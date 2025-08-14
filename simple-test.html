@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="nav" content="/nav">
+    <title>Simple Navigation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 5px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Navigation Metadata Test</h1>
+    
+    <div id="results">
+        <h2>Test Results:</h2>
+        <div id="metadata-status">Checking metadata...</div>
+        <div id="navigation-status">Checking navigation...</div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>DOM Debug Information:</h3>
+        <div id="dom-debug">Loading...</div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <h3>Expected Results:</h3>
+        <ul>
+            <li class="success">✅ Nav metadata should be found: <code>/nav</code></li>
+            <li class="success">✅ Navigation should load from AEM instead of default</li>
+            <li class="info">ℹ️ Check browser console for detailed logs</li>
+        </ul>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <h3>Console Logs to Look For:</h3>
+        <pre>🔍 Getting navigation metadata...
+📋 getMetadata("nav") result: /nav
+📋 Direct DOM query found nav meta: /nav
+🛣️ Loading navigation from path: /nav
+📄 Fragment loaded: [HTMLElement]
+✅ AEM navigation successfully parsed: {sections: [...]}</pre>
+    </div>
+    
+    <script type="module">
+        // DOM debugging function
+        function debugDOM() {
+            const debugDiv = document.getElementById('dom-debug');
+            let debugInfo = '';
+            
+            // Document state
+            debugInfo += `<p><strong>Document State:</strong></p>`;
+            debugInfo += `<ul>`;
+            debugInfo += `<li>Ready State: ${document.readyState}</li>`;
+            debugInfo += `<li>Head exists: ${!!document.head}</li>`;
+            debugInfo += `<li>Head children: ${document.head ? document.head.children.length : 'N/A'}</li>`;
+            debugInfo += `<li>Body children: ${document.body ? document.body.children.length : 'N/A'}</li>`;
+            debugInfo += `</ul>`;
+            
+            // Meta tags
+            debugInfo += `<p><strong>Meta Tags Found:</strong></p>`;
+            const allMetaTags = document.querySelectorAll('meta');
+            debugInfo += `<p>Total meta tags: ${allMetaTags.length}</p>`;
+            debugInfo += `<ul>`;
+            allMetaTags.forEach((meta, index) => {
+                const name = meta.getAttribute('name');
+                const property = meta.getAttribute('property');
+                const content = meta.getAttribute('content');
+                debugInfo += `<li>Meta ${index}: name="${name}" property="${property}" content="${content}"</li>`;
+            });
+            debugInfo += `</ul>`;
+            
+            // Specific nav meta
+            const navMeta = document.querySelector('meta[name="nav"]');
+            if (navMeta) {
+                debugInfo += `<p class="success">✅ Nav meta found: ${navMeta.getAttribute('content')}</p>`;
+            } else {
+                debugInfo += `<p class="error">❌ Nav meta NOT found</p>`;
+            }
+            
+            debugDiv.innerHTML = debugInfo;
+        }
+        
+        // Test metadata detection
+        function testMetadata() {
+            const results = document.getElementById('metadata-status');
+            
+            // Test 1: Direct DOM query
+            const navMeta = document.querySelector('meta[name="nav"]');
+            if (navMeta) {
+                const content = navMeta.getAttribute('content');
+                results.innerHTML = `<span class="success">✅ Nav metadata found: ${content}</span>`;
+                console.log('✅ Metadata test passed:', content);
+            } else {
+                results.innerHTML = '<span class="error">❌ Nav metadata not found</span>';
+                console.error('❌ Metadata test failed');
+            }
+            
+            // Test 2: Test getMetadata function directly
+            console.log('🔍 Testing getMetadata function directly...');
+            try {
+                // Check if getMetadata is available
+                if (typeof window.getMetadata === 'function') {
+                    console.log('✅ getMetadata function is available on window');
+                    const result = window.getMetadata('nav');
+                    console.log('📋 window.getMetadata("nav"):', result);
+                } else {
+                    console.log('❌ getMetadata function not available on window');
+                }
+                
+                // Check if document.head exists
+                console.log('🔍 Document head check:');
+                console.log('  - document.head exists:', !!document.head);
+                console.log('  - document.head type:', typeof document.head);
+                console.log('  - document.head children:', document.head ? document.head.children.length : 'N/A');
+                
+                // Check if we can query meta tags directly
+                console.log('🔍 Direct meta query test:');
+                const allMeta = document.querySelectorAll('meta');
+                console.log('  - Total meta tags:', allMeta.length);
+                console.log('  - Meta tags in head:', document.head ? document.head.querySelectorAll('meta').length : 'N/A');
+                
+                // Try to replicate getMetadata logic
+                console.log('🔍 Replicating getMetadata logic...');
+                if (document.head) {
+                    const metaElements = document.head.querySelectorAll('meta[name="nav"]');
+                    console.log('  - meta[name="nav"] in head:', metaElements.length);
+                    metaElements.forEach((meta, index) => {
+                        console.log(`  - Meta ${index}:`, {
+                            name: meta.getAttribute('name'),
+                            content: meta.getAttribute('content'),
+                            outerHTML: meta.outerHTML
+                        });
+                    });
+                }
+                
+            } catch (error) {
+                console.error('❌ Error testing getMetadata:', error);
+            }
+        }
+        
+        // Test navigation component
+        async function testNavigation() {
+            const navStatus = document.getElementById('navigation-status');
+            
+            try {
+                // Import and test the navigation component
+                const { default: decorate } = await import('./blocks/header/header.js');
+                
+                // Create a test header element
+                const testHeader = document.createElement('header');
+                testHeader.style.border = '2px solid #ccc';
+                testHeader.style.padding = '20px';
+                testHeader.style.margin = '20px 0';
+                testHeader.innerHTML = '<h3>Navigation Component Test</h3>';
+                
+                document.body.appendChild(testHeader);
+                
+                // Decorate the header
+                await decorate(testHeader);
+                
+                navStatus.innerHTML = '<span class="success">✅ Navigation component loaded successfully</span>';
+                console.log('✅ Navigation test passed');
+                
+            } catch (error) {
+                navStatus.innerHTML = `<span class="error">❌ Navigation test failed: ${error.message}</span>`;
+                console.error('❌ Navigation test failed:', error);
+            }
+        }
+        
+        // Test at different stages
+        function runTests() {
+            console.log('🚀 Running tests...');
+            debugDOM();
+            testMetadata();
+            testNavigation();
+        }
+        
+        // Run tests immediately
+        console.log('🚀 Page loaded, running immediate tests...');
+        runTests();
+        
+        // Run tests when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 DOM Content Loaded, running tests again...');
+            runTests();
+        });
+        
+        // Run tests when window loads
+        window.addEventListener('load', () => {
+            console.log('🚀 Window loaded, running final tests...');
+            runTests();
+        });
+        
+        // Also test after a short delay
+        setTimeout(() => {
+            console.log('🚀 Delayed test (500ms)...');
+            runTests();
+        }, 500);
+        
+        setTimeout(() => {
+            console.log('🚀 Delayed test (1000ms)...');
+            runTests();
+        }, 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="nav" content="/nav">
+    <title>Minimal Metadata Test</title>
+</head>
+<body>
+    <h1>Minimal Metadata Test</h1>
+    
+    <div id="results"></div>
+    
+    <script>
+        function testMetadata() {
+            const results = document.getElementById('results');
+            let output = '<h2>Test Results:</h2>';
+            
+            // Test 1: Basic DOM query
+            output += '<h3>1. Basic DOM Query:</h3>';
+            const navMeta = document.querySelector('meta[name="nav"]');
+            if (navMeta) {
+                const content = navMeta.getAttribute('content');
+                output += `<p style="color: green;">✅ Found: ${content}</p>`;
+                console.log('✅ Basic DOM query found:', content);
+            } else {
+                output += '<p style="color: red;">❌ Not found</p>';
+                console.error('❌ Basic DOM query failed');
+            }
+            
+            // Test 2: Document head check
+            output += '<h3>2. Document Head Check:</h3>';
+            output += `<p>Document head exists: ${!!document.head}</p>`;
+            output += `<p>Document head children: ${document.head ? document.head.children.length : 'N/A'}</p>`;
+            output += `<p>Document ready state: ${document.readyState}</p>`;
+            
+            // Test 3: All meta tags
+            output += '<h3>3. All Meta Tags:</h3>';
+            const allMeta = document.querySelectorAll('meta');
+            output += `<p>Total meta tags: ${allMeta.length}</p>`;
+            output += '<ul>';
+            allMeta.forEach((meta, index) => {
+                const name = meta.getAttribute('name');
+                const property = meta.getAttribute('property');
+                const content = meta.getAttribute('content');
+                output += `<li>Meta ${index}: name="${name}" property="${property}" content="${content}"</li>`;
+            });
+            output += '</ul>';
+            
+            // Test 4: Head-specific query
+            output += '<h3>4. Head-Specific Query:</h3>';
+            if (document.head) {
+                const headMeta = document.head.querySelectorAll('meta[name="nav"]');
+                output += `<p>Meta tags in head with name="nav": ${headMeta.length}</p>`;
+                headMeta.forEach((meta, index) => {
+                    output += `<p>  - Meta ${index}: ${meta.outerHTML}</p>`;
+                });
+            } else {
+                output += '<p style="color: red;">❌ Document head not available</p>';
+            }
+            
+            // Test 5: Timing test
+            output += '<h3>5. Timing Test:</h3>';
+            output += `<p>Current time: ${new Date().toISOString()}</p>`;
+            
+            results.innerHTML = output;
+        }
+        
+        // Test immediately
+        console.log('🚀 Testing immediately...');
+        testMetadata();
+        
+        // Test when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Testing on DOMContentLoaded...');
+            testMetadata();
+        });
+        
+        // Test when window loads
+        window.addEventListener('load', () => {
+            console.log('🚀 Testing on window load...');
+            testMetadata();
+        });
+        
+        // Test after delays
+        [100, 500, 1000].forEach(delay => {
+            setTimeout(() => {
+                console.log(`🚀 Testing after ${delay}ms delay...`);
+                testMetadata();
+            }, delay);
+        });
+    </script>
+</body>
+</html>
