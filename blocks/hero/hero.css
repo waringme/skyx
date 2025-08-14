@@ -7,7 +7,7 @@
   position: relative;
   padding: 20px 24px 10px 24px;
   min-height: 300px;
-  margin-top: 10px;
+  margin-top: 80px; /* Reduced spacing to move hero closer to navigation */
 }
 
 .hero h1 {

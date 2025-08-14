@@ -140,6 +140,12 @@ export default async function decorate(block) {
       navList.classList.add('primary-nav-list');
     }
 
+    // Create secondary navigation container
+    const secondaryNav = document.createElement('div');
+    secondaryNav.className = 'secondary-navigation';
+    secondaryNav.style.display = 'none';
+    navSections.appendChild(secondaryNav);
+
     navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
       if (navSection.querySelector('ul')) {
         navSection.classList.add('nav-drop');
@@ -150,14 +156,103 @@ export default async function decorate(block) {
         navSection.classList.add('nav-item');
       }
       
+      // Convert p tags to a tags for proper navigation styling
+      const pTag = navSection.querySelector('p');
+      if (pTag && !navSection.querySelector('a')) {
+        const link = document.createElement('a');
+        link.href = '#'; // Default href, can be updated with data attributes
+        link.textContent = pTag.textContent;
+        link.className = 'nav-link';
+        
+        // Replace p tag with a tag
+        pTag.replaceWith(link);
+      }
+      
       navSection.addEventListener('click', () => {
         if (isDesktop.matches) {
           const expanded = navSection.getAttribute('aria-expanded') === 'true';
           toggleAllNavSections(navSections);
           navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+          
+          // Show/hide secondary navigation based on dropdown state
+          if (navSection.classList.contains('nav-drop')) {
+            if (!expanded) {
+              // Show secondary navigation
+              showSecondaryNavigation(secondaryNav, navSection);
+            } else {
+              // Hide secondary navigation
+              hideSecondaryNavigation(secondaryNav);
+            }
+          }
         }
       });
     });
+  }
+
+  // Create default navigation tools if none exist
+  const navTools = nav.querySelector('.nav-tools');
+  
+  if (!navTools || navTools.children.length === 0) {
+    const toolsSection = nav.querySelector('.nav-tools') || document.createElement('div');
+    toolsSection.className = 'nav-tools';
+    
+    // Search icon
+    const searchButton = document.createElement('button');
+    searchButton.className = 'search-button';
+    searchButton.setAttribute('aria-label', 'Search');
+    searchButton.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.35-4.35"></path>
+      </svg>
+    `;
+    
+    // Notification bell icon
+    const notificationButton = document.createElement('button');
+    notificationButton.className = 'notification-button';
+    notificationButton.setAttribute('aria-label', 'Notifications');
+    notificationButton.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 8a6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+      </svg>
+    `;
+    
+    // My Sky dropdown
+    const mySkyLink = document.createElement('a');
+    mySkyLink.href = '/my-sky';
+    mySkyLink.textContent = 'My Sky';
+    mySkyLink.innerHTML = `
+      My Sky
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    `;
+    
+    // Help dropdown
+    const helpLink = document.createElement('a');
+    helpLink.href = '/help';
+    helpLink.textContent = 'Help';
+    helpLink.innerHTML = `
+      Help
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6,9 12,15 18,9"></polyline>
+      </svg>
+    `;
+    
+    // Sign in button
+    const signInButton = document.createElement('a');
+    signInButton.href = '/signin';
+    signInButton.className = 'primary';
+    signInButton.textContent = 'Sign in';
+    
+    // Add all tools to the tools section
+    toolsSection.append(searchButton, notificationButton, mySkyLink, helpLink, signInButton);
+    
+    // If nav-tools didn't exist, add it to the nav
+    if (!nav.querySelector('.nav-tools')) {
+      nav.appendChild(toolsSection);
+    }
   }
 
   // hamburger for mobile
@@ -177,4 +272,71 @@ export default async function decorate(block) {
   navWrapper.className = 'nav-wrapper';
   navWrapper.append(nav);
   block.append(navWrapper);
+}
+
+/**
+ * shows the secondary navigation menu
+ * @param {Element} secondaryNav The secondary navigation container
+ * @param {Element} navSection The primary navigation section that was clicked
+ */
+function showSecondaryNavigation(secondaryNav, navSection) {
+  // Get the dropdown content
+  const dropdownContent = navSection.querySelector('ul');
+  if (!dropdownContent) return;
+  
+  // Clear existing content
+  secondaryNav.innerHTML = '';
+  
+  // Create secondary navigation items
+  const secondaryList = document.createElement('ul');
+  secondaryList.className = 'secondary-nav-list';
+  
+  // Try different selectors to find the dropdown items
+  let dropdownItems = dropdownContent.querySelectorAll('li > a');
+  
+  // If no items found with li > a, try just li elements
+  if (dropdownItems.length === 0) {
+    const liElements = dropdownContent.querySelectorAll('li');
+    
+    liElements.forEach((li) => {
+      // Check if li has an a tag or just text
+      const linkElement = li.querySelector('a') || li;
+      const textContent = linkElement.textContent.trim();
+      
+      if (textContent) {
+        const secondaryItem = document.createElement('li');
+        const secondaryLink = document.createElement('a');
+        secondaryLink.href = linkElement.href || '#';
+        secondaryLink.textContent = textContent;
+        secondaryLink.className = 'secondary-nav-link';
+        
+        secondaryItem.appendChild(secondaryLink);
+        secondaryList.appendChild(secondaryItem);
+      }
+    });
+  } else {
+    // Use the original a tag approach
+    dropdownItems.forEach((item) => {
+      const secondaryItem = document.createElement('li');
+      const secondaryLink = document.createElement('a');
+      secondaryLink.href = item.href || '#';
+      secondaryLink.textContent = item.textContent;
+      secondaryLink.className = 'secondary-nav-link';
+      
+      secondaryItem.appendChild(secondaryLink);
+      secondaryList.appendChild(secondaryItem);
+    });
+  }
+  
+  secondaryNav.appendChild(secondaryList);
+  secondaryNav.style.display = 'block';
+}
+
+/**
+ * hides the secondary navigation menu
+ * @param {Element} secondaryNav The secondary navigation container
+ */
+function hideSecondaryNavigation(secondaryNav) {
+  secondaryNav.style.display = 'none';
+  secondaryNav.innerHTML = '';
 }

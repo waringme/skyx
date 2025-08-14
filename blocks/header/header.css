@@ -109,6 +109,7 @@ header nav .nav-sections {
   visibility: visible;
   white-space: nowrap;
   padding: 0;
+  position: relative;
 }
 
 /* Primary Navigation List - Sky.com nav-item-group Style */
@@ -242,7 +243,7 @@ header nav .nav-sections .primary-nav-list .nav-drop > ul > li > a {
   font-size: 14px;
   display: block;
   transition: all 0.2s ease;
-  color: #1a1a1a;
+  color: #000000;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-weight: 400;
   letter-spacing: 0;
@@ -260,6 +261,8 @@ header nav .nav-sections ul > li {
   font-weight: 400;
   margin-bottom: 0;
   position: relative;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 header nav .nav-sections ul > li > a {
@@ -273,6 +276,8 @@ header nav .nav-sections ul > li > a {
   letter-spacing: 0;
   transition: color 0.2s ease;
   line-height: 1.4;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 header nav .nav-sections ul > li > a:hover {
@@ -319,8 +324,9 @@ header nav .nav-sections .nav-drop[aria-expanded='true']::after {
   transform: translateY(-50%) rotate(225deg);
 }
 
+/* Ensure dropdown content is accessible for secondary navigation */
 header nav .nav-sections .default-content-wrapper > ul > li > ul {
-  display: none;
+  display: none !important;
   position: absolute;
   left: -20px;
   width: 240px;
@@ -332,26 +338,20 @@ header nav .nav-sections .default-content-wrapper > ul > li > ul {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   z-index: 1001;
   margin-top: 8px;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
-header nav .nav-sections .default-content-wrapper > ul > li[aria-expanded='true'] > ul {
-  display: block;
-}
-
-header nav .nav-sections .default-content-wrapper > ul > li > ul::before {
-  content: '';
-  position: absolute;
-  top: -8px;
-  left: 32px;
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid #ffffff;
-}
-
+/* But keep the content accessible for JavaScript */
 header nav .nav-sections .default-content-wrapper > ul > li > ul > li {
-  margin-bottom: 0;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+header nav .nav-sections .default-content-wrapper > ul > li > ul > li > a {
+  visibility: visible !important;
+  opacity: 1 !important;
+  color: #000000 !important;
 }
 
 header nav .nav-sections .default-content-wrapper > ul > li > ul > li > a {
@@ -393,6 +393,7 @@ header nav .nav-tools button {
   transition: all 0.2s ease;
   cursor: pointer;
   display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 header nav .nav-tools a:hover,
@@ -407,6 +408,7 @@ header nav .nav-tools button.primary {
   background-color: var(--sky-white) !important;
   color: var(--sky-text) !important;
   border: 1px solid var(--sky-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 header nav .nav-tools a.primary:hover,
@@ -425,18 +427,62 @@ header nav .nav-tools .search-button {
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 header nav .nav-tools .search-button:hover {
   background-color: var(--sky-light-blue);
 }
 
-/* Icon styling for tools */
-header nav .nav-tools svg,
-header nav .nav-tools i {
+/* Notification button styling */
+header nav .nav-tools .notification-button {
+  padding: 8px;
+  border: none;
+  background-color: transparent;
+  color: var(--sky-text);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+header nav .nav-tools .notification-button:hover {
+  background-color: var(--sky-light-blue);
+}
+
+/* Dropdown link styling */
+header nav .nav-tools a:not(.primary) {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  color: var(--sky-text);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+header nav .nav-tools a:not(.primary):hover {
+  background-color: var(--sky-light-blue);
+  color: var(--sky-blue);
+}
+
+/* SVG icon styling */
+header nav .nav-tools svg {
   width: 18px;
   height: 18px;
-  fill: currentColor;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: all 0.2s ease;
+}
+
+/* Smaller chevron icons for dropdown links */
+header nav .nav-tools a:not(.primary) svg {
+  width: 12px;
+  height: 12px;
 }
 
 /* Mobile responsive */
@@ -674,4 +720,154 @@ header nav .nav-tools button:focus {
 .hero-block .description,
 .hero-block .text {
   color: white;
+}
+
+/* Primary navigation list styling */
+.primary-nav-list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0 40px;
+  width: 100%;
+  max-width: 800px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Legacy navigation styling */
+ul > li > a {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: 0;
+  font-weight: 400;
+  line-height: 1.4;
+  padding: 16px 12px;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+/* Navigation link styling for converted p tags */
+header nav .nav-sections .nav-item .nav-link {
+  padding: 0 18px;
+  font-size: 15px;
+  position: relative;
+  color: #1a1a1a;
+  text-decoration: none;
+  font-weight: 400;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: 0;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  text-align: center;
+  cursor: pointer;
+}
+
+header nav .nav-sections .nav-item .nav-link:hover {
+  color: #0070d2;
+  background-color: transparent;
+}
+
+header nav .nav-sections .nav-item .nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 18px;
+  right: 18px;
+  width: 0;
+  height: 2px;
+  background-color: #0070d2;
+  transition: width 0.2s ease;
+}
+
+header nav .nav-sections .nav-item .nav-link:hover::after {
+  width: calc(100% - 36px);
+}
+
+/* Hide original vertical dropdowns when secondary navigation is active */
+header nav .nav-sections .primary-nav-list .nav-drop > ul {
+  display: none !important;
+}
+
+/* Hide legacy dropdown styles */
+header nav .nav-sections .default-content-wrapper > ul > li > ul {
+  display: none !important;
+}
+
+/* Hide all dropdown arrows and indicators when using secondary navigation */
+header nav .nav-sections .primary-nav-list .nav-drop::after {
+  display: none !important;
+}
+
+header nav .nav-sections .nav-drop::after {
+  display: none !important;
+}
+
+/* Secondary Navigation */
+header nav .nav-sections .secondary-navigation {
+  position: fixed !important;
+  top: 60px !important; /* Primary navigation height only, no gap */
+  left: 0 !important;
+  right: 0 !important;
+  background-color: var(--sky-white) !important;
+  border-top: 1px solid #e5e7eb !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  z-index: 99999 !important;
+  padding: 8px 0 !important;
+  display: none;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  min-height: 40px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  clip-path: none !important;
+}
+
+header nav .nav-sections .secondary-navigation .secondary-nav-list {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  /* gap: 48px; */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  flex-direction: row !important;
+  visibility: visible;
+  opacity: 1;
+}
+
+header nav .nav-sections .secondary-navigation .secondary-nav-list > li {
+  display: inline-block !important;
+  margin: 0 !important;
+  visibility: visible;
+  opacity: 1;
+}
+
+header nav .nav-sections .secondary-navigation .secondary-nav-link {
+  color: #1a1a1a;
+  text-decoration: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.2;
+  padding: 6px 16px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+header nav .nav-sections .secondary-navigation .secondary-nav-link:hover {
+  color: #0070d2;
+  background-color: var(--sky-light-blue);
 }
